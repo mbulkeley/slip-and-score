@@ -1,0 +1,9 @@
+<a class="card" href="{{ project.get_absolute_url }}">
+  {% with cover=project.cover %}
+    {% if cover %}<img src="{{ cover.thumbnail.url }}" alt="" loading="lazy">{% else %}<span class="card-blank">◯</span>{% endif %}
+  {% endwith %}
+  <span class="card-body">
+    <strong>{{ project.title }}</strong>
+    <span class="stage stage-{{ project.stage }}">{{ project.get_stage_display }}</span>
+  </span>
+</a>

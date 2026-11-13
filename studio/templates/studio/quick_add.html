@@ -1,0 +1,87 @@
+{% extends "studio/base.html" %}
+{% block title %}Add{% endblock %}
+{% block content %}
+<h1>Add from the studio</h1>
+
+<form method="post" enctype="multipart/form-data" class="quick-add" id="quick-add">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="errors">{{ form.non_field_errors }}</div>{% endif %}
+
+  <fieldset>
+    <legend>1 · Which piece?</legend>
+    {{ form.project }}
+    <div class="new-title" id="new-title">
+      {{ form.new_title.errors }}
+      <input type="text" name="new_title" value="{{ form.new_title.value|default:'' }}" placeholder="Name the new piece, e.g. Tall blue vase" maxlength="200">
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>2 · Stage</legend>
+    {{ form.stage.errors }}
+    <div class="stage-buttons">
+      {% for radio in form.stage %}
+        <label class="stage-btn">{{ radio.tag }}<span>{{ radio.choice_label }}</span></label>
+      {% endfor %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>3 · Photos</legend>
+    <label class="photo-pick">
+      {{ form.photos }}
+      <span id="photo-label">📷 Take or choose photos</span>
+    </label>
+    <div class="previews" id="previews"></div>
+  </fieldset>
+
+  <details class="quick-note" {% if form.note.value %}open{% endif %}>
+    <summary>Add a quick note</summary>
+    {{ form.note }}
+  </details>
+
+  <button type="submit" class="save" id="save-btn">Save</button>
+</form>
+{{ next_stages|json_script:"next-stages" }}
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  const project = document.getElementById("id_project");
+  const newTitle = document.getElementById("new-title");
+  const nextStages = JSON.parse(document.getElementById("next-stages").textContent);
+
+  function syncProject(pickStage) {
+    newTitle.hidden = project.value !== "";
+    if (pickStage) {
+      const stage = nextStages[project.value] || "built";
+      const radio = document.querySelector('input[name="stage"][value="' + stage + '"]');
+      if (radio) radio.checked = true;
+    }
+  }
+  project.addEventListener("change", () => syncProject(true));
+  syncProject(false);
+
+  const input = document.querySelector('input[name="photos"]');
+  const previews = document.getElementById("previews");
+  const label = document.getElementById("photo-label");
+  input.addEventListener("change", () => {
+    previews.innerHTML = "";
+    [...input.files].forEach((file) => {
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      previews.appendChild(img);
+    });
+    const n = input.files.length;
+    label.textContent = n ? "📷 " + n + " photo" + (n === 1 ? "" : "s") + " — tap to change" : "📷 Take or choose photos";
+  });
+
+  document.getElementById("quick-add").addEventListener("submit", () => {
+    const btn = document.getElementById("save-btn");
+    btn.disabled = true;
+    btn.textContent = "Uploading…";
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "studio/base.html" %}
+{% block title %}{{ project.title }}{% endblock %}
+{% block content %}
+<header class="piece-head">
+  <h1>{{ project.title }}</h1>
+  <p class="meta">
+    <span class="stage stage-{{ project.stage }}">{{ project.get_stage_display }}</span>
+    {% if project.method %} · {{ project.get_method_display }}{% endif %}
+    {% if project.clay_body %} · {{ project.clay_body }}{% endif %}
+  </p>
+  {% if project.description %}<p>{{ project.description|linebreaksbr }}</p>{% endif %}
+  <p class="actions">
+    <a class="btn" href="{% url 'studio:quick_add' %}?project={{ project.pk }}">＋ Add to this piece</a>
+    <a class="btn btn-quiet" href="{% url 'admin:studio_project_change' project.pk %}">Edit details &amp; glazes</a>
+  </p>
+</header>
+
+{% if applications %}
+<section>
+  <h2>Glazes</h2>
+  <ul class="glaze-apps">
+    {% for app in applications %}
+      <li><a href="{{ app.glaze.get_absolute_url }}">{{ app.glaze.name }}</a>
+        <small>{% if app.method %}{{ app.get_method_display }}{% endif %}{% if app.coats %} · {{ app.coats }} coat{{ app.coats|pluralize }}{% endif %}{% if app.where %} · {{ app.where }}{% endif %}</small></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<section class="timeline">
+  <h2>Timeline</h2>
+  {% for entry in entries %}
+    <article class="entry">
+      <header>
+        <span class="stage stage-{{ entry.stage }}">{{ entry.get_stage_display }}</span>
+        <time datetime="{{ entry.date|date:'Y-m-d' }}">{{ entry.date|date:"D j M Y" }}</time>
+        <a class="edit" href="{% url 'studio:entry_edit' entry.pk %}">{% if entry.needs_notes %}Add notes{% else %}Edit{% endif %}</a>
+      </header>
+      {% if entry.photos.all %}
+        <div class="photos">
+          {% for photo in entry.photos.all %}<a href="{{ photo.image.url }}"><img src="{{ photo.thumbnail.url }}" alt="{{ photo.caption }}" loading="lazy"></a>{% endfor %}
+        </div>
+      {% endif %}
+      {% if entry.notes %}<div class="notes">{{ entry.notes|linebreaks }}</div>
+      {% else %}<p class="needs"><a href="{% url 'studio:entry_edit' entry.pk %}">✎ No notes yet</a></p>{% endif %}
+    </article>
+  {% empty %}
+    <p class="empty">No entries yet.</p>
+  {% endfor %}
+</section>
+{% endblock %}

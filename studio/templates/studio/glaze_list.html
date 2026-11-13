@@ -1,0 +1,23 @@
+{% extends "studio/base.html" %}
+{% block title %}Glazes{% endblock %}
+{% block content %}
+<h1>Glazes</h1>
+<p class="actions"><a class="btn btn-quiet" href="{% url 'admin:studio_glaze_add' %}">＋ New glaze</a></p>
+{% if glazes %}
+  <div class="grid">
+    {% for glaze in glazes %}
+      <a class="card" href="{{ glaze.get_absolute_url }}">
+        {% with cover=glaze.photos.all|first %}
+          {% if cover %}<img src="{{ cover.thumbnail.url }}" alt="" loading="lazy">{% else %}<span class="card-blank">◐</span>{% endif %}
+        {% endwith %}
+        <span class="card-body">
+          <strong>{{ glaze.name }}</strong>
+          <small>{% if glaze.maker %}{{ glaze.maker }}{% endif %}{% if glaze.cone_range %} · cone {{ glaze.cone_range }}{% endif %}{% if glaze.n_projects %} · {{ glaze.n_projects }} piece{{ glaze.n_projects|pluralize }}{% endif %}</small>
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="empty">No glazes yet. Add the ones you use most first.</p>
+{% endif %}
+{% endblock %}

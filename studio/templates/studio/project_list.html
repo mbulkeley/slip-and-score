@@ -1,0 +1,17 @@
+{% extends "studio/base.html" %}
+{% block title %}Pieces{% endblock %}
+{% block content %}
+<h1>Pieces</h1>
+<nav class="tabs">
+  <a href="?show=all" {% if show == "all" %}class="on"{% endif %}>All</a>
+  <a href="?show=active" {% if show == "active" %}class="on"{% endif %}>In progress</a>
+  <a href="?show=finished" {% if show == "finished" %}class="on"{% endif %}>Finished</a>
+</nav>
+{% if projects %}
+  <div class="grid">
+    {% for project in projects %}{% include "studio/_project_card.html" %}{% endfor %}
+  </div>
+{% else %}
+  <p class="empty">Nothing here yet.</p>
+{% endif %}
+{% endblock %}
