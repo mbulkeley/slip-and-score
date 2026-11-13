@@ -1,0 +1,15 @@
+{% extends "studio/base.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<div class="login">
+  <h1>Slip &amp; Score</h1>
+  <form method="post" class="entry-form">
+    {% csrf_token %}
+    {% if form.errors %}<p class="errors">That username and password didn't match.</p>{% endif %}
+    <label>Username <input type="text" name="username" autocomplete="username" autocapitalize="none" required autofocus></label>
+    <label>Password <input type="password" name="password" autocomplete="current-password" required></label>
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="save">Log in</button>
+  </form>
+</div>
+{% endblock %}

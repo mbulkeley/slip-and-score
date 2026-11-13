@@ -1,0 +1,38 @@
+# systemd unit for the Slip & Score app (gunicorn), behind nginx ← Cloudflare Tunnel.
+#
+# Install:  sudo cp deploy/slip-and-score.service /etc/systemd/system/
+#           sudo systemctl daemon-reload && sudo systemctl enable --now slip-and-score
+# Logs:     journalctl -u slip-and-score -f
+#
+# Paths assume the checkout lives at /home/pi/Projects/slip-and-score with its venv
+# at ./venv — adjust if yours is elsewhere.
+
+[Unit]
+Description=Slip & Score studio journal (Django via gunicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/Projects/slip-and-score
+EnvironmentFile=/home/pi/Projects/slip-and-score/.env
+
+# Deploy = git pull → pip install -r requirements.txt → systemctl restart.
+ExecStartPre=/home/pi/Projects/slip-and-score/venv/bin/python manage.py migrate --noinput
+ExecStartPre=/home/pi/Projects/slip-and-score/venv/bin/python manage.py collectstatic --noinput
+
+# Localhost only. 2 workers is plenty for a household.
+# 120s timeout: resizing a batch of 12MP phone photos takes a while on a Pi.
+ExecStart=/home/pi/Projects/slip-and-score/venv/bin/gunicorn config.wsgi:application \
+    --bind 127.0.0.1:8002 \
+    --workers 2 \
+    --timeout 120 \
+    --access-logfile - \
+    --error-logfile -
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

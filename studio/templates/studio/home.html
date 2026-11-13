@@ -1,0 +1,43 @@
+{% extends "studio/base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<a class="big-add" href="{% url 'studio:quick_add' %}">
+  <span class="big-add-icon">＋</span>
+  <span><strong>Add from the studio</strong><br><small>Photo + stage. Notes later.</small></span>
+</a>
+
+<section>
+  <h2>Needs notes <span class="count">{{ needs_notes|length }}</span></h2>
+  {% if needs_notes %}
+    <ul class="note-queue">
+      {% for entry in needs_notes %}
+      <li>
+        <a href="{% url 'studio:entry_edit' entry.pk %}">
+          <span class="queue-thumbs">
+            {% for photo in entry.photos.all|slice:":3" %}<img src="{{ photo.thumbnail.url }}" alt="" loading="lazy">{% empty %}<span class="no-photo">✎</span>{% endfor %}
+          </span>
+          <span class="queue-text">
+            <strong>{{ entry.project.title }}</strong>
+            <small>{{ entry.get_stage_display }} · {{ entry.date|date:"D j M" }}{% with n=entry.photos.all|length %}{% if n %} · {{ n }} photo{{ n|pluralize }}{% endif %}{% endwith %}</small>
+          </span>
+          <span class="chev">›</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty">All caught up. ✨</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Recent pieces</h2>
+  {% if recent %}
+    <div class="grid">
+      {% for project in recent %}{% include "studio/_project_card.html" %}{% endfor %}
+    </div>
+  {% else %}
+    <p class="empty">No pieces yet — tap <strong>Add from the studio</strong> to start one.</p>
+  {% endif %}
+</section>
+{% endblock %}

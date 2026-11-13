@@ -1,0 +1,42 @@
+{% extends "studio/base.html" %}
+{% block title %}{{ glaze.name }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{% url 'studio:glaze_list' %}">‹ Glazes</a></p>
+<h1>{{ glaze.name }}</h1>
+<dl class="facts">
+  {% if glaze.maker %}<dt>Maker</dt><dd>{{ glaze.maker }}</dd>{% endif %}
+  {% if glaze.cone_range %}<dt>Cone</dt><dd>{{ glaze.cone_range }}</dd>{% endif %}
+  {% if glaze.surface %}<dt>Surface</dt><dd>{{ glaze.get_surface_display }}</dd>{% endif %}
+  <dt>Food safe</dt><dd>{% if glaze.food_safe is None %}Unknown{% elif glaze.food_safe %}Yes{% else %}No{% endif %}</dd>
+  {% if glaze.reference_url %}<dt>Link</dt><dd><a href="{{ glaze.reference_url }}" rel="noopener" target="_blank">{{ glaze.reference_url|truncatechars:40 }}</a></dd>{% endif %}
+</dl>
+{% if glaze.notes %}<div class="notes">{{ glaze.notes|linebreaks }}</div>{% endif %}
+{% if glaze.recipe %}<h2>Recipe</h2><pre class="recipe">{{ glaze.recipe }}</pre>{% endif %}
+<p class="actions"><a class="btn btn-quiet" href="{% url 'admin:studio_glaze_change' glaze.pk %}">Edit glaze</a></p>
+
+<section>
+  <h2>Test tiles &amp; swatches</h2>
+  {% if glaze.photos.all %}
+    <div class="photos">
+      {% for photo in glaze.photos.all %}
+        <figure><a href="{{ photo.image.url }}"><img src="{{ photo.thumbnail.url }}" alt="{{ photo.caption }}" loading="lazy"></a>{% if photo.caption %}<figcaption>{{ photo.caption }}</figcaption>{% endif %}</figure>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <form method="post" enctype="multipart/form-data" class="entry-form">
+    {% csrf_token %}
+    <label class="photo-pick">{{ form.photos }}<span>📷 Add test tile photos</span></label>
+    <label>Caption {{ form.caption }}</label>
+    <button type="submit" class="save">Upload</button>
+  </form>
+</section>
+
+<section>
+  <h2>Used on</h2>
+  {% if projects %}
+    <div class="grid">{% for project in projects %}{% include "studio/_project_card.html" %}{% endfor %}</div>
+  {% else %}
+    <p class="empty">Not used on any piece yet. Add it from a piece's “Edit details &amp; glazes”.</p>
+  {% endif %}
+</section>
+{% endblock %}

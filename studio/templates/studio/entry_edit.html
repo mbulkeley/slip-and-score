@@ -1,0 +1,31 @@
+{% extends "studio/base.html" %}
+{% block title %}Notes · {{ entry.project.title }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{{ entry.project.get_absolute_url }}">‹ {{ entry.project.title }}</a></p>
+<h1>{{ entry.get_stage_display }} <small>{{ entry.date|date:"D j M" }}</small></h1>
+
+{% if entry.photos.all %}
+<div class="big-photos">
+  {% for photo in entry.photos.all %}
+    <figure>
+      <a href="{{ photo.image.url }}"><img src="{{ photo.image.url }}" alt="{{ photo.caption }}" loading="lazy"></a>
+      <form method="post" action="{% url 'studio:photo_delete' photo.pk %}" onsubmit="return confirm('Remove this photo?')">
+        {% csrf_token %}<button class="linkish danger">Remove</button>
+      </form>
+    </figure>
+  {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" class="entry-form">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <label>Notes {{ form.notes.errors }}{{ form.notes }}</label>
+  <div class="row">
+    <label>Date {{ form.date.errors }}{{ form.date }}</label>
+    <label>Stage {{ form.stage.errors }}{{ form.stage }}</label>
+  </div>
+  <label>Add photos {{ form.photos }}</label>
+  <button type="submit" class="save">Save notes</button>
+</form>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% load static %}{
+  "name": "Slip & Score",
+  "short_name": "Slip & Score",
+  "start_url": "{% url 'studio:home' %}",
+  "display": "standalone",
+  "background_color": "#f4ede4",
+  "theme_color": "#f4ede4",
+  "icons": [
+    {"src": "{% static 'studio/icon-180.png' %}", "sizes": "180x180", "type": "image/png"},
+    {"src": "{% static 'studio/icon-512.png' %}", "sizes": "512x512", "type": "image/png"}
+  ]
+}

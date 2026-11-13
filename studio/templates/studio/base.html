@@ -1,0 +1,42 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}Studio{% endblock %} · Slip &amp; Score</title>
+  <link rel="stylesheet" href="{% static 'studio/style.css' %}">
+  <link rel="icon" href="{% static 'studio/icon.svg' %}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{% static 'studio/icon-180.png' %}">
+  <link rel="manifest" href="{% url 'studio:manifest' %}">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Slip &amp; Score">
+  <meta name="theme-color" content="#f4ede4">
+</head>
+<body>
+  {% if user.is_authenticated %}
+  <header class="topbar">
+    <a class="brand" href="{% url 'studio:home' %}">Slip <span class="amp">&amp;</span> Score</a>
+    <nav>
+      <a href="{% url 'studio:project_list' %}">Pieces</a>
+      <a href="{% url 'studio:glaze_list' %}">Glazes</a>
+      <a class="nav-add" href="{% url 'studio:quick_add' %}">＋ Add</a>
+    </nav>
+  </header>
+  {% endif %}
+
+  <main>
+    {% for message in messages %}
+      <p class="flash flash-{{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if user.is_authenticated %}
+  <footer class="foot">
+    <a href="{% url 'admin:index' %}">Admin</a>
+    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="linkish">Log out</button></form>
+  </footer>
+  {% endif %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>

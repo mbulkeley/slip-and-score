@@ -1,0 +1,11 @@
+# Scan staged changes for secrets before every commit.
+#   brew install gitleaks pre-commit   (or your platform's equivalent)
+#   pre-commit install
+repos:
+  - repo: local
+    hooks:
+      - id: gitleaks
+        name: gitleaks
+        entry: gitleaks protect --staged --redact
+        language: system
+        pass_filenames: false
