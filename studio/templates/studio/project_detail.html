@@ -38,7 +38,7 @@
       </header>
       {% if entry.photos.all %}
         <div class="photos">
-          {% for photo in entry.photos.all %}<a href="{{ photo.image.url }}"><img src="{{ photo.thumbnail.url }}" alt="{{ photo.caption }}" loading="lazy"></a>{% endfor %}
+          {% for photo in entry.photos.all %}<a href="{{ photo.image.url }}" data-lightbox="entry-{{ entry.pk }}" data-caption="{{ photo.caption }}"><img src="{{ photo.thumbnail.url }}" alt="{{ photo.caption }}" loading="lazy"></a>{% endfor %}
         </div>
       {% endif %}
       {% if entry.notes %}<div class="notes">{{ entry.notes|linebreaks }}</div>
