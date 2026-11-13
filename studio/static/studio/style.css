@@ -185,3 +185,30 @@ button.save:disabled { opacity: 0.6; }
   .stage-buttons { grid-template-columns: repeat(3, 1fr); }
   .previews { grid-template-columns: repeat(6, 1fr); }
 }
+
+/* Photo viewer (lightbox.js) */
+html.lb-open { overflow: hidden; }
+.lightbox {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; place-items: center;
+  background: #14100e;
+  -webkit-tap-highlight-color: transparent;
+  padding: calc(3.5rem + env(safe-area-inset-top)) 0.5rem calc(3rem + env(safe-area-inset-bottom));
+  touch-action: pan-y;
+}
+.lightbox[hidden] { display: none; }
+.lb-figure { margin: 0; display: grid; justify-items: center; gap: 0.6rem; width: 100%; height: 100%; align-content: center; }
+.lb-img { max-width: 100%; max-height: calc(100vh - 8rem); max-height: calc(100dvh - 8rem); object-fit: contain; border-radius: 6px; user-select: none; -webkit-user-drag: none; }
+.lb-caption { color: #efe5d9; font-size: 0.95rem; text-align: center; padding: 0 1rem; }
+.lightbox button {
+  position: absolute; display: grid; place-items: center;
+  width: 48px; height: 48px; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14); color: #fff; font-size: 1.5rem; line-height: 1; cursor: pointer;
+}
+.lightbox button[hidden] { display: none; }
+.lb-close { top: calc(0.6rem + env(safe-area-inset-top)); right: 0.8rem; }
+.lb-prev, .lb-next { top: 50%; transform: translateY(-50%); font-size: 2rem; }
+.lb-prev { left: 0.4rem; }
+.lb-next { right: 0.4rem; }
+.lb-counter { position: absolute; bottom: calc(0.9rem + env(safe-area-inset-bottom)); left: 0; right: 0; text-align: center; color: #cbbfb3; font-size: 0.9rem; }
+@media (hover: none) { .lb-prev, .lb-next { background: rgba(255, 255, 255, 0.08); } }
