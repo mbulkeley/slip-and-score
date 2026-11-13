@@ -227,3 +227,23 @@ class PageSmokeTests(BaseTest):
         for url in urls:
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 200)
+
+
+class LightboxTests(BaseTest):
+    def test_photo_links_open_in_viewer_not_bare_image(self):
+        """In the home-screen app there's no back button, so photo links must
+        be handled by the in-page viewer (data-lightbox), not navigate away."""
+        glaze = Glaze.objects.create(name="Celadon")
+        project = Project.objects.create(title="Bowl")
+        entry = JournalEntry.objects.create(project=project, stage=Stage.BUILT)
+        Photo.from_upload(jpeg(), entry=entry)
+        Photo.from_upload(jpeg(), glaze=glaze)
+        for url, group in (
+            (project.get_absolute_url(), f"entry-{entry.pk}"),
+            (entry.get_absolute_url(), f"entry-{entry.pk}"),
+            (glaze.get_absolute_url(), f"glaze-{glaze.pk}"),
+        ):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertContains(response, f'data-lightbox="{group}"')
+                self.assertContains(response, "studio/lightbox.js")

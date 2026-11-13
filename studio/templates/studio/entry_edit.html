@@ -8,7 +8,7 @@
 <div class="big-photos">
   {% for photo in entry.photos.all %}
     <figure>
-      <a href="{{ photo.image.url }}"><img src="{{ photo.image.url }}" alt="{{ photo.caption }}" loading="lazy"></a>
+      <a href="{{ photo.image.url }}" data-lightbox="entry-{{ entry.pk }}" data-caption="{{ photo.caption }}"><img src="{{ photo.image.url }}" alt="{{ photo.caption }}" loading="lazy"></a>
       <form method="post" action="{% url 'studio:photo_delete' photo.pk %}" onsubmit="return confirm('Remove this photo?')">
         {% csrf_token %}<button class="linkish danger">Remove</button>
       </form>

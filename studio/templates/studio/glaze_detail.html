@@ -19,7 +19,7 @@
   {% if glaze.photos.all %}
     <div class="photos">
       {% for photo in glaze.photos.all %}
-        <figure><a href="{{ photo.image.url }}"><img src="{{ photo.thumbnail.url }}" alt="{{ photo.caption }}" loading="lazy"></a>{% if photo.caption %}<figcaption>{{ photo.caption }}</figcaption>{% endif %}</figure>
+        <figure><a href="{{ photo.image.url }}" data-lightbox="glaze-{{ glaze.pk }}" data-caption="{{ photo.caption }}"><img src="{{ photo.thumbnail.url }}" alt="{{ photo.caption }}" loading="lazy"></a>{% if photo.caption %}<figcaption>{{ photo.caption }}</figcaption>{% endif %}</figure>
       {% endfor %}
     </div>
   {% endif %}
