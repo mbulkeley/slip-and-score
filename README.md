@@ -1,5 +1,6 @@
 # Slip & Score
 
+[![CI](https://github.com/mbulkeley/slip-and-score/actions/workflows/ci.yml/badge.svg)](https://github.com/mbulkeley/slip-and-score/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![Django](https://img.shields.io/badge/django-5.2-0C4B33)
 ![License: MIT](https://img.shields.io/badge/license-MIT-yellow)
