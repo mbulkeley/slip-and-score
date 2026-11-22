@@ -2,10 +2,15 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
@@ -28,3 +33,23 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Catches private strings that gitleaks does not treat as secrets:
+      # host names, server paths, internal machine names. The patterns live in
+      # a repository secret so this public file never spells them out.
+      # Unset secret => the step passes, so forks and first-time setup are fine.
+      - name: Check for private strings
+        env:
+          PRIVATE_PATTERNS: ${{ secrets.PRIVATE_PATTERNS }}
+        run: |
+          if [ -z "${PRIVATE_PATTERNS}" ]; then
+            echo "PRIVATE_PATTERNS is not set - skipping private string check."
+            exit 0
+          fi
+          matches=$(grep -rIlE "${PRIVATE_PATTERNS}" --exclude-dir=.git . || true)
+          if [ -n "${matches}" ]; then
+            echo "::error::Private strings found in the files listed below."
+            echo "${matches}"
+            exit 1
+          fi
+          echo "No private strings found."
