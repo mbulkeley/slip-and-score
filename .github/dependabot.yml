@@ -1,0 +1,31 @@
+version: 2
+
+updates:
+  # NOTE: the production host runs a 32-bit armhf userland. Before merging a
+  # major bump, confirm the package still ships or builds an armhf wheel there.
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: saturday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    groups:
+      python-minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: saturday
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns:
+          - "*"

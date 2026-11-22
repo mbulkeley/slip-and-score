@@ -1,5 +1,11 @@
 # Runbook: deploy Slip & Score to ceramics.example.com
 
+> **Placeholders.** This repository is public, so the real host name is
+> written as `ceramics.example.com` throughout, and the Cloudflare team and
+> tunnel ID as `<team>` and `<tunnel-id>`. Substitute your own values
+> wherever they appear. The `/home/pi` paths are the Raspberry Pi OS default
+> and are real; change them only if your checkout lives elsewhere.
+
 ```
 phone / Mac ─HTTPS─▶ Cloudflare (Access login) ─▶ cloudflared ─▶ nginx 127.0.0.1:8090 ─▶ gunicorn 127.0.0.1:8002
                                                                    ├─ /static/ → staticfiles/
